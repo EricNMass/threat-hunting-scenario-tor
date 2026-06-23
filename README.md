@@ -102,8 +102,7 @@ DeviceProcessEvents
 
 ### 4. Searched the `DeviceNetworkEvents` Table for TOR Network Connections
 
-Search the DeviceNetworkEvents table for any indication the tor browser was used to establish a connection using any of the known tor ports
-On 2026-06-22T23:49:32.5452036Z, the user sierra-mojave on the device the-real-mass-t successfully established a network connection using Firefox (firefox.exe) to 127.0.0.1 (the local machine itself) on port 9150. Because 127.0.0.1 is the localhost address and port 9150 is commonly used by the Tor Browser SOCKS proxy, this activity indicates that Firefox was communicating with the local Tor service to route web traffic through the Tor network. This is expected behavior when using Tor Browser and does not represent an external network connection by itself. There were a few other connections to sites over port 443.
+Search the DeviceNetworkEvents table for any indication the tor browser was used to establish a connection using any of the known tor ports. On 2026-06-22T23:49:32.5452036Z, the user **sierra-mojave** on the device **the-real-mass-t** successfully established a network connection using Firefox (firefox.exe) to 127.0.0.1 (the local machine itself) on port 9150. Because 127.0.0.1 is the localhost address and port 9150 is commonly used by the Tor Browser SOCKS proxy, this activity indicates that Firefox was communicating with the local Tor service to route web traffic through the Tor network. This is expected behavior when using Tor Browser and does not represent an external network connection by itself. There were a few other connections to sites over port 443.
 
 **Query used to locate events:**
 
@@ -128,52 +127,55 @@ DeviceNetworkEvents
 
 ---
 
+# Detection and Analysis
+A threat hunt was conducted on device **the-real-mass-t** to determine whether the user **sierra-mojave** downloaded, installed, launched, and utilized the Tor Browser. Analysis focused exclusively on Tor-related file, process, and network activity observed in Microsoft Defender telemetry.
+
 ## Chronological Event Timeline 
 
-### 1. File Download - TOR Installer
+### 1. TOR Browser Installer Appears on the System
 
-- **Timestamp:** `2024-11-08T22:14:48.6065231Z`
-- **Event:** The user "employee" downloaded a file named `tor-browser-windows-x86_64-portable-14.0.1.exe` to the Downloads folder.
+- **Timestamp:** `2026-06-22T19:45:08.0000000Z`
+- **Event:** The user **"sierra-mojave"** downloaded a file named `tor-browser-windows-x86_64-portable-15.0.16.exe` to the Downloads folder.
 - **Action:** File download detected.
-- **File Path:** `C:\Users\employee\Downloads\tor-browser-windows-x86_64-portable-14.0.1.exe`
+- **File Path:** `C:\Users\sierra-mojave\Downloads\tor-browser-windows-x86_64-portable-15.0.16.exe`
 
-### 2. Process Execution - TOR Browser Installation
+### 2. Silent Installation / Extraction of TOR Browser
 
-- **Timestamp:** `2024-11-08T22:16:47.4484567Z`
-- **Event:** The user "employee" executed the file `tor-browser-windows-x86_64-portable-14.0.1.exe` in silent mode, initiating a background installation of the TOR Browser.
+- **Timestamp:** `2026-06-22T19:48:01.0000000Z`
+- **Event:** The user **"sierra-mojave"** executed the file `tor-browser-windows-x86_64-portable-15.0.16.exe` in silent mode, initiating a background installation of the TOR Browser.
 - **Action:** Process creation detected.
-- **Command:** `tor-browser-windows-x86_64-portable-14.0.1.exe /S`
-- **File Path:** `C:\Users\employee\Downloads\tor-browser-windows-x86_64-portable-14.0.1.exe`
+- **Command:** `tor-browser-windows-x86_64-portable-15.0.16.exe /S`
+- **File Path:** `C:\Users\sierra-mojave\Downloads\tor-browser-windows-x86_64-portable-15.0.16.exe`
 
-### 3. Process Execution - TOR Browser Launch
+### 3. Process Execution - TOR Browser Launched
 
-- **Timestamp:** `2024-11-08T22:17:21.6357935Z`
-- **Event:** User "employee" opened the TOR browser. Subsequent processes associated with TOR browser, such as `firefox.exe` and `tor.exe`, were also created, indicating that the browser launched successfully.
+- **Timestamp:** `2026-06-22T19:48:47.0000000Z`
+- **Event:** User **"sierra-mojave"** opened the TOR browser. Subsequent processes associated with TOR browser, such as `firefox.exe` and `tor.exe`, were also created, indicating that the browser launched successfully.
 - **Action:** Process creation of TOR browser-related executables detected.
-- **File Path:** `C:\Users\employee\Desktop\Tor Browser\Browser\TorBrowser\Tor\tor.exe`
+- **File Path:** `C:\Users\sierra-mojave\Desktop\Tor Browser\Browser\TorBrowser\Tor\tor.exe`
 
-### 4. Network Connection - TOR Network
+### 4. Initial TOR Network Connectivity Attempts
 
-- **Timestamp:** `2024-11-08T22:18:01.1246358Z`
-- **Event:** A network connection to IP `176.198.159.33` on port `9001` by user "employee" was established using `tor.exe`, confirming TOR browser network activity.
-- **Action:** Connection success.
-- **Process:** `tor.exe`
-- **File Path:** `c:\users\employee\desktop\tor browser\browser\torbrowser\tor\tor.exe`
+- **Timestamp:** `2026-06-22T23:49:09.961617Z`
+- **Event:** A network connection to IP `127.0.0.1` on port `9150` by user **"sierra-mojave"** was established using `tor.exe`, confirming TOR browser network activity.
+- **Action:** Connection Success.
+- **Process:** `firefox.exe`
+- **File Path:** `c:\users\sierra-mojave\desktop\tor browser\browser\firefox.exe`
 
-### 5. Additional Network Connections - TOR Browser Activity
+### 5. Continued TOR Activity Later in the Session
 
 - **Timestamps:**
-  - `2024-11-08T22:18:08Z` - Connected to `194.164.169.85` on port `443`.
-  - `2024-11-08T22:18:16Z` - Local connection to `127.0.0.1` on port `9150`.
-- **Event:** Additional TOR network connections were established, indicating ongoing activity by user "employee" through the TOR browser.
-- **Action:** Multiple successful connections detected.
+  - `2026-06-22T23:49:29.728075Z` - Connected to `64.65.1.116` on port `443`.
+  - `2026-06-22T23:49:48.7138102Z` - Local connection to `86.45.51.133` on port `9001`.
+- **Event:** Additional TOR network connections were established, indicating ongoing activity by user **"sierra-mojave"** through the TOR browser.
+- **Action:** Multiple successful and failed connections detected.
 
-### 6. File Creation - TOR Shopping List
+### 6. Creation of TOR-Related User File
 
-- **Timestamp:** `2024-11-08T22:27:19.7259964Z`
-- **Event:** The user "employee" created a file named `tor-shopping-list.txt` on the desktop, potentially indicating a list or notes related to their TOR browser activities.
+- **Timestamp:** `2026-06-22T20:05:17.0000000Z`
+- **Event:** The user **"sierra-mojave"** created a file named **`tor-shopping-list.txt`** on the desktop, potentially indicating a list or notes related to their TOR browser activities.
 - **Action:** File creation detected.
-- **File Path:** `C:\Users\employee\Desktop\tor-shopping-list.txt`
+- **File Path:** `C:\Users\sierra-mojave\Desktop\tor-shopping-list.txt`
 
 ---
 
