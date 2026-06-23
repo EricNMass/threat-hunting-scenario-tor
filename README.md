@@ -1,20 +1,21 @@
-# threat-hunting-scenario-tor
-# Official [Cyber Range](http://joshmadakor.tech/cyber-range) Project
+# Threat Hunting Lab
 
-<img width="400" src="https://github.com/user-attachments/assets/44bac428-01bb-4fe9-9d85-96cba7698bee" alt="Tor Logo with the onion and a crosshair on it"/>
+<img width="285" height="177" alt="download" src="https://github.com/user-attachments/assets/ba9efa67-6ae3-4b02-84b4-e22d2aaf7155" />
 
 # Threat Hunt Report: Unauthorized TOR Usage
 - [Scenario Creation](https://github.com/EricNMass/threat-hunting-scenario-tor/blob/main/threat-hunting-scenario-tor-event-creation.md)
 
 ## Platforms and Languages Leveraged
-- Windows 10 Virtual Machines (Microsoft Azure)
+- Windows 11 Virtual Machines (Microsoft Azure)
 - EDR Platform: Microsoft Defender for Endpoint
 - Kusto Query Language (KQL)
 - Tor Browser
 
 ##  Scenario
 
-Management suspects that some employees may be using TOR browsers to bypass network security controls because recent network logs show unusual encrypted traffic patterns and connections to known TOR entry nodes. Additionally, there have been anonymous reports of employees discussing ways to access restricted sites during work hours. The goal is to detect any TOR usage and analyze related security incidents to mitigate potential risks. If any use of TOR is found, notify management.
+Management has raised concerns that employees may be utilizing the Tor Browser to circumvent established network security measures. This concern stems from the observation of unusual encrypted network traffic and connections to infrastructure associated with the Tor network. Additionally, reports have suggested that some employees may be exploring methods to access websites that are normally restricted during business hours.
+
+The objective of this investigation is to identify any instances of Tor Browser usage, analyze related activity, and assess any potential security risks to the organization. If evidence of Tor usage is identified, the findings should be documented and reported to management.
 
 ### High-Level TOR-Related IoC Discovery Plan
 
@@ -28,17 +29,16 @@ Management suspects that some employees may be using TOR browsers to bypass netw
 
 ### 1. Searched the `DeviceFileEvents` Table
 
-Searched for any file that had the string "tor" in it and discovered what looks like the user "employee" downloaded a TOR installer, did something that resulted in many TOR-related files being copied to the desktop, and the creation of a file called `tor-shopping-list.txt` on the desktop at `2024-11-08T22:27:19.7259964Z`. These events began at `2024-11-08T22:14:48.6065231Z`.
+Searched the DeviceFileEvents table for ANY file that had the string “tor” in it and discovered what looks like the user “employee” downloaded a tor installer, did something that results in many tor-related files being copied to the desktop and the creation of a file called “tor-shopping-list.txt” on the desktop at this time 2026-06-23T00:05:17.599296Z. These events began at: 2026-06-22T23:45:08.473708Z
 
 **Query used to locate events:**
 
 ```kql
-DeviceFileEvents  
-| where DeviceName == "threat-hunt-lab"  
-| where InitiatingProcessAccountName == "employee"  
-| where FileName contains "tor"  
-| where Timestamp >= datetime(2024-11-08T22:14:48.6065231Z)  
-| order by Timestamp desc  
+DeviceFileEvents
+| where FileName startswith "tor"
+| where DeviceName == "the-real-mass-t"
+| where Timestamp >= datetime(2026-06-22T23:45:08.473708Z)
+| order by Timestamp desc 
 | project Timestamp, DeviceName, ActionType, FileName, FolderPath, SHA256, Account = InitiatingProcessAccountName
 ```
 <img width="1212" alt="image" src="https://github.com/user-attachments/assets/71402e84-8767-44f8-908c-1805be31122d">
