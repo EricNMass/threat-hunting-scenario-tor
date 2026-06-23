@@ -13,9 +13,9 @@
 
 ##  Scenario
 
-Management has raised concerns that employees may be utilizing the Tor Browser to circumvent established network security measures. This concern stems from the observation of unusual encrypted network traffic and connections to infrastructure associated with the Tor network. Additionally, reports have suggested that some employees may be exploring methods to access websites that are normally restricted during business hours.
+Management has raised concerns that employees may be utilizing the TOR Browser to circumvent established network security measures. This concern stems from the observation of unusual encrypted network traffic and connections to infrastructure associated with the Tor network. Additionally, reports have suggested that some employees may be exploring methods to access websites that are normally restricted during business hours.
 
-The objective of this investigation is to identify any instances of Tor Browser usage, analyze related activity, and assess any potential security risks to the organization. If evidence of Tor usage is identified, the findings should be documented and reported to management.
+The objective of this investigation is to identify any instances of TOR Browser usage, analyze related activity, and assess any potential security risks to the organization. If evidence of Tor usage is identified, the findings should be documented and reported to management.
 
 ### High-Level TOR-Related IoC Discovery Plan
 
@@ -29,7 +29,7 @@ The objective of this investigation is to identify any instances of Tor Browser 
 
 ### 1. Searched the `DeviceFileEvents` Table
 
-Searched the DeviceFileEvents table for ANY file that had the string “tor” in it and discovered what looks like the user **“sierra-mojave”** downloaded a tor installer, did something that results in many tor-related files being copied to the desktop and the creation of a file called **“tor-shopping-list.txt”** on the desktop at this time 2026-06-23T00:05:17.599296Z. These events began at: 2026-06-22T23:45:08.473708Z.
+Searched the DeviceFileEvents table for any file containing the string "tor" and discovered evidence indicating that the user "sierra-mojave" downloaded a TOR Browser installer. Subsequent activity suggests that numerous TOR-related files were copied to the desktop, along with the creation of a file named "tor-shopping-list.txt" on the desktop at 2026-06-23T00:05:17.599296Z. The earliest Tor-related file activity was observed at 2026-06-22T23:45:08.473708Z.
 
 **Query used to locate events:**
 
@@ -53,8 +53,7 @@ DeviceFileEvents
 
 ### 2. Searched the `DeviceProcessEvents` Table
 
-Searched the DeviceProcessEvents table for any ProcessCommandLine that contained the string “tor-browser-windows-x86_64-portable-15.0.16.exe”. Based on the logs returned at 2026-06-22T23:48:01.0869376Z, the user **sierra-mojave** on the device ***the-real-mass-t*** launched the Tor Browser Portable installer (version 15.0.16). The installer was executed with the /S silent-install switch, indicating an attempt to install or extract Tor Browser without displaying installation prompts or requiring user interaction. Microsoft Defender recorded the creation of the process and captured the executable's unique SHA-256 hash (f3228ceebef9a3fb82e97c41b93e3dde54eb643703781252683ec463f6f626fa) for identification and threat analysis.
-
+Searched the DeviceProcessEvents table for any ProcessCommandLine containing the string "tor-browser-windows-x86_64-portable-15.0.16.exe". Log data from 2026-06-22T23:48:01.0869376Z showed that user sierra-mojave on device the-real-mass-t executed the TOR Browser Portable 15.0.16 installer. The process was launched with the /S switch, indicating a silent installation or extraction that bypassed installation prompts and user interaction. Microsoft Defender recorded the process creation event and captured the executable's SHA-256 hash (f3228ceebef9a3fb82e97c41b93e3dde54eb643703781252683ec463f6f626fa) for identification and analysis purposes.
 **Query used to locate event:**
 
 ```kql
@@ -102,7 +101,7 @@ DeviceProcessEvents
 
 ### 4. Searched the `DeviceNetworkEvents` Table for TOR Network Connections
 
-Search the DeviceNetworkEvents table for any indication the tor browser was used to establish a connection using any of the known tor ports. On 2026-06-22T23:49:32.5452036Z, the user **sierra-mojave** on the device **the-real-mass-t** successfully established a network connection using Firefox (firefox.exe) to 127.0.0.1 (the local machine itself) on port 9150. Because 127.0.0.1 is the localhost address and port 9150 is commonly used by the Tor Browser SOCKS proxy, this activity indicates that Firefox was communicating with the local Tor service to route web traffic through the Tor network. This is expected behavior when using Tor Browser and does not represent an external network connection by itself. There were a few other connections to sites over port 443.
+Search the DeviceNetworkEvents table for any indication the tor browser was used to establish a connection using any of the known tor ports. On 2026-06-22T23:49:32.5452036Z, the user **sierra-mojave** on the device **the-real-mass-t** successfully established a network connection using Firefox (firefox.exe) to 127.0.0.1 (the local machine itself) on port 9150. Because 127.0.0.1 is the localhost address and port 9150 is commonly used by the Tor Browser SOCKS proxy, this activity indicates that Firefox was communicating with the local TOR service to route web traffic through the TOR network. This is expected behavior when using TOR Browser and does not represent an external network connection by itself. There were a few other connections to sites over port 443.
 
 **Query used to locate events:**
 
@@ -128,7 +127,7 @@ DeviceNetworkEvents
 ---
 
 # Detection and Analysis
-A threat hunt was conducted on device **the-real-mass-t** to determine whether the user **sierra-mojave** downloaded, installed, launched, and utilized the Tor Browser. Analysis focused exclusively on Tor-related file, process, and network activity observed in Microsoft Defender telemetry.
+A threat hunt was conducted on device **the-real-mass-t** to determine whether the user **sierra-mojave** downloaded, installed, launched, and utilized the TOR Browser. Analysis focused exclusively on Tor-related file, process, and network activity observed in Microsoft Defender telemetry.
 
 ## Chronological Event Timeline 
 
@@ -181,12 +180,12 @@ A threat hunt was conducted on device **the-real-mass-t** to determine whether t
 
 ## Summary
 
-The user "employee" on the "threat-hunt-lab" device initiated and completed the installation of the TOR browser. They proceeded to launch the browser, establish connections within the TOR network, and created various files related to TOR on their desktop, including a file named `tor-shopping-list.txt`. This sequence of activities indicates that the user actively installed, configured, and used the TOR browser, likely for anonymous browsing purposes, with possible documentation in the form of the "shopping list" file.
+Investigation results show that user **sierra-mojave** downloaded and silently installed TOR Browser Portable 15.0.16 on device **the-real-mass-t**. TOR-related processes, including tor.exe and firefox.exe, were successfully launched and established communication with the local TOR SOCKS proxy (127.0.0.1:9150). Network telemetry further showed connection attempts to TOR relay infrastructure and subsequent successful encrypted communications over port 443, confirming connectivity to the Tor network. TOR-related activity persisted for over an hour after installation, indicating active use of the Tor Browser during the investigation period.
 
 ---
 
 ## Response Taken
 
-TOR usage was confirmed on the endpoint `threat-hunt-lab` by the user `employee`. The device was isolated, and the user's direct manager was notified.
+TOR usage was confirmed on the endpoint **the-real-mass-t** by the user **`sierra-mojave`**. The device was isolated, and the user's direct manager was notified.
 
 ---
