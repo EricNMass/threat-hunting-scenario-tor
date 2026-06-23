@@ -29,7 +29,7 @@ The objective of this investigation is to identify any instances of Tor Browser 
 
 ### 1. Searched the `DeviceFileEvents` Table
 
-Searched the DeviceFileEvents table for ANY file that had the string “tor” in it and discovered what looks like the user “employee” downloaded a tor installer, did something that results in many tor-related files being copied to the desktop and the creation of a file called “tor-shopping-list.txt” on the desktop at this time 2026-06-23T00:05:17.599296Z. These events began at: 2026-06-22T23:45:08.473708Z
+Searched the DeviceFileEvents table for ANY file that had the string “tor” in it and discovered what looks like the user “employee” downloaded a tor installer, did something that results in many tor-related files being copied to the desktop and the creation of a file called “tor-shopping-list.txt” on the desktop at this time 2026-06-23T00:05:17.599296Z. These events began at: 2026-06-22T23:45:08.473708Z.
 
 **Query used to locate events:**
 
